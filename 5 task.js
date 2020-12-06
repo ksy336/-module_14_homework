@@ -27,7 +27,6 @@ const btnNode = document.querySelector('.j-btn-request');
 
 
 function displayResult(apiData) {
-
     let cards = '';
 
     apiData.forEach(item => {
@@ -43,38 +42,42 @@ function displayResult(apiData) {
         cards = cards + cardBlock;
     });
 
-
-
+    localStorage.setItem('images', cards);
     resultNode.innerHTML = cards;
 }
 
 
 btnNode.addEventListener('click', () => {
-    let page = document.querySelector('#number2').value;
-    if (page > 10 && page < 1 || typeof value != 'number') {
-        return resultNode.innerText = 'Номер страницы вне диапазона от 1 до 10';
-    }
-    let limit = document.querySelector('#number2').value;
-    if (limit > 10 && limit < 1 || typeof value != 'number') {
-        return resultNode.innerText = 'Лимит вне диапазона от 1 до 10';
-    }
-    if (page > 10 && page < 1 || typeof value != 'number' && limit > 10 && limit < 1 || typeof value != 'number') {
-        return resultNode.innerText = 'Номер страницы и лимит вне диапазона от 1 до 10';
+    let page = +document.querySelector('#number1').value;
+    let limit = +document.querySelector('#number2').value;
+    // Ошибка в условиях, снова использовано логическое И вместо ИЛИ. Также перегруппировала условия, чтобы обработка значений была более оптимальной
+    if ((page > 10 || page < 1 || typeof page != 'number') && (limit > 10 || limit < 1 || typeof limit != 'number')) {
+        resultNode.innerText = 'Номер страницы и лимит вне диапазона от 1 до 10';
+    } else if (page > 10 || page < 1 || typeof page != 'number') { // Переменная value нигде не объявлена, нужно использовать те переменные, что уже есть: page или limit
+        resultNode.innerText = 'Номер страницы вне диапазона от 1 до 10';
+    } else if (limit > 10 || limit < 1 || typeof limit != 'number') {
+        resultNode.innerText = 'Лимит вне диапазона от 1 до 10';
     } else {
-        let myUrl = 'https://picsum.photos/v2/list?page=&limit=' + page + limit;
+        // Значения неверно подставляются в URL. Лучше всего использовать для этого шаблонную строку
+        let myUrl = `https://picsum.photos/v2/list?page=${page}&limit=${limit}`;
         useRequest(myUrl, displayResult)
     }
 
 })
 
-const jsonString = `
-{"id":"",
-"author":"",
-"width":,
-"height":,
-"url":"",
-"download_url":""
-  
+if (localStorage.getItem('images')) {
+    resultNode.innerHTML = localStorage.getItem('images');
 }
-`;
-localStorage.setItem('myJSON', jsonString);
+
+// const jsonString = `
+// {"id":"",
+// "author":"",
+// "width":,
+// "height":,
+// "url":"",
+// "download_url":""
+  
+// }
+// `;
+// localStorage.setItem('myJSON', jsonString);
+// Сохранение в localStorage сделано неправильно. Сейчас вы сохраняете туда json-строку, которая не содержит никаких данных. Выше добавила верный вариант сохранения данных в localStorage

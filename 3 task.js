@@ -51,7 +51,7 @@ function displayResult(apiData) {
 
 btnNode.addEventListener('click', () => {
     let num = document.querySelector('input').value;
-    if (num > 10 && num < 1) {
+    if (num > 10 || num < 1) { // Ошибка в проверке значения. Число не может быть одновременно больше 10 и меньше 1, поэтому в данном случае нужно использовать логичемкое ИЛИ
         return resultNode.innerText = 'число вне диапазона от 1 до 10';
     }
     let myUrl = 'https://picsum.photos/v2/list?limit='  + num;
